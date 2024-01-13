@@ -5,6 +5,7 @@
 #define ANALOG_VOLT_IN_PIN A0
 #define ANALOG_CURRENT_IN_PIN A1
 #define ANALOG_TEMP_IN_PIN A2
+#define LED_PIN 13  // Assuming you are using the built-in LED on most Arduino boards
 
 // Floats for ADC voltage & input voltage
 float adc_voltage = 0.0;
@@ -76,8 +77,13 @@ void loop() {
   lcd.setCursor(9, 1);
   lcd.print(current, 2);
   lcd.setCursor(0, 1);
-  // lcd.print("Temperature: ");
-  // lcd.print(temperature, 2);
+
+  // Check temperature and turn on LED if it's above 50 degrees Celsius
+  if (temperature > 50.0) {
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
 
   // Short delay
   delay(500);
