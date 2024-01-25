@@ -4,8 +4,7 @@
 // Define analog inputs
 #define ANALOG_VOLT_IN_PIN A0
 #define ANALOG_CURRENT_IN_PIN A1
-#define ANALOG_TEMP_IN_PIN A2
-#define LED_PIN 13  // Assuming you are using the built-in LED on most Arduino boards
+#define BUZZER_PIN 9  // Connect the buzzer to digital pin 9
 
 // Floats for ADC voltage & input voltage
 float adc_voltage = 0.0;
@@ -24,17 +23,17 @@ float ref_voltage = 5.0;
 int adc_value = 0;
 
 // Sensitivity for current sensor (adjust as needed)
-float sensitivity = 185.0; // Replace with your actual sensitivity value
+float sensitivity = 185.0;  // Replace with your actual sensitivity value
 
 // LCD configuration
-LiquidCrystal_I2C lcd(0x27, 16, 2); // Change the address (0x27) if needed
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Change the address (0x27) if needed
 
 void setup() {
   // Setup Serial Monitor
   lcd.init();
   lcd.backlight();
   Serial.begin(9600);
-  Serial.println("Voltage, Current, and Temperature Test");
+  Serial.println("Voltage, Current, Power, and Temperature Test");
 
   // Setup LCD
   lcd.begin(16, 2);
@@ -47,8 +46,7 @@ void loop() {
   // Read the Analog Inputs
   adc_value = analogRead(ANALOG_VOLT_IN_PIN);
   sensorValue = analogRead(ANALOG_CURRENT_IN_PIN);
-  int tempSensorValue = analogRead(ANALOG_TEMP_IN_PIN);
-
+  
   // Determine voltage at ADC input
   adc_voltage = (adc_value * ref_voltage) / 1024.0;
 
@@ -56,8 +54,8 @@ void loop() {
   in_voltage = adc_voltage / (R2 / (R1 + R2));
   current = sensorValue * (5.0 / 1023) / sensitivity;
 
-  // Convert temperature analog value to temperature in degrees Celsius
-  float temperature = (tempSensorValue * 5.0 / 1024.0) * 100.0;
+  // Calculate power
+  float power = in_voltage * current;
 
   // Print results to Serial Monitor
   Serial.print("Input Voltage = ");
@@ -67,22 +65,28 @@ void loop() {
   Serial.print(current, 2);
   Serial.println(" A");
 
-  Serial.print("Temperature: ");
-  Serial.print(temperature, 2);
-  Serial.println(" °C");
+  Serial.print("Power: ");
+  Serial.print(power, 2);
+  Serial.println(" W");
 
   // Update LCD
-  lcd.setCursor(9, 0);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Voltage: ");
   lcd.print(in_voltage, 2);
-  lcd.setCursor(9, 1);
-  lcd.print(current, 2);
+  
   lcd.setCursor(0, 1);
+  lcd.print("Current: ");
+  lcd.print(current, 2);
+  lcd.setCursor(9, 1);
+  lcd.print("Power: ");
+  lcd.print(power, 2);
 
-  // Check temperature and turn on LED if it's above 50 degrees Celsius
-  if (temperature > 50.0) {
-    digitalWrite(LED_PIN, HIGH);
+  // Check temperature and activate buzzer if it's above 50 degrees Celsius
+  if (power > 50.0) {
+    tone(BUZZER_PIN, 1000);  // Beep at 1000 Hz
   } else {
-    digitalWrite(LED_PIN, LOW);
+    noTone(BUZZER_PIN);  // Turn off the buzzer
   }
 
   // Short delay
