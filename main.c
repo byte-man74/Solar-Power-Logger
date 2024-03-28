@@ -84,7 +84,7 @@ void loop() {
 
   // Check temperature and activate buzzer if it's above 50 degrees Celsius
   if (power > 50.0) {
-    tone(BUZZER_PIN, 1000);  // Beep at 1000 Hz
+    tone(BUZZER_PIN, 1000);  /
   } else {
     noTone(BUZZER_PIN);  // Turn off the buzzer
   }
