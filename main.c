@@ -6,7 +6,7 @@
 #define ANALOG_CURRENT_IN_PIN A1
 #define BUZZER_PIN 9  // Connect the buzzer to digital pin 9
 
-// Floats for ADC voltage & input voltage
+// Floats for ADC voltage & input voltagee
 float adc_voltage = 0.0;
 float in_voltage = 0.0;
 int sensorValue = 0;
