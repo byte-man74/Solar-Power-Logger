@@ -89,6 +89,6 @@ void loop() {
     noTone(BUZZER_PIN);  // Turn off the buzzer
   }
 
-  // Short delay
+  // Short delay.
   delay(500);
 }
